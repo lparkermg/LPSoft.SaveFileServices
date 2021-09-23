@@ -5,7 +5,9 @@
 namespace SaveFileServices
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
 
     /// <inheritdoc />
     public sealed class SaveService<TData> : ISaveFileService<TData>
@@ -51,7 +53,13 @@ namespace SaveFileServices
                 throw new ArgumentException("Path provided is invalid.");
             }
 
-            throw new System.NotImplementedException();
+            using (var fs = File.Create(path))
+            {
+                var serializer = new XmlSerializer(typeof(TData[]));
+                serializer.Serialize(fs, _maxSlots);
+
+                return Task.CompletedTask;
+            }
         }
 
         /// <inheritdoc />

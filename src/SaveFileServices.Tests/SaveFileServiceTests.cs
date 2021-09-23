@@ -1,11 +1,20 @@
 using NUnit.Framework;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SaveFileServices.Tests
 {
     public class SaveFileServiceTests
     {
+        private string _filePath = "./file.test";
+
+        [TearDown]
+        public void TearDown()
+        {
+            File.Delete(_filePath);
+        }
+
         [Test]
         public void Get_GivenNegativeIndex_ThrowsArgumentException()
         {
@@ -58,6 +67,35 @@ namespace SaveFileServices.Tests
         {
             var service = new SaveService<string>(5);
             Assert.That(() => service.Save(path), Throws.ArgumentException.With.Message.EqualTo("Path provided is invalid."));
+        }
+
+        [Test]
+        public async Task Save_GivenValidFilePath_SavesFileToCorrectLocationAndCorrectlySavesData()
+        {
+            var service = new SaveService<string>(5);
+            var testIndex = 2;
+            var testData = "This is some test data.";
+
+            var expectedData = new[]
+            {
+                null,
+                null,
+                testData,
+                null,
+                null
+            };
+
+            await service.Set(testIndex, testData);
+            await service.Save(_filePath);
+
+            Assert.That(File.Exists(_filePath), Is.True);
+
+            var data = await File.ReadAllBytesAsync(_filePath);
+            var memStream = new MemoryStream(data);
+            var serializer = new XmlSerializer(typeof(string[]));
+            var actualData = (string[])serializer.Deserialize(memStream);
+
+            Assert.That(expectedData, Is.EquivalentTo(actualData));
         }
     }
 }
