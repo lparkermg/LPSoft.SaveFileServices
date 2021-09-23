@@ -29,6 +29,11 @@ namespace SaveFileServices.Tests
             Assert.That(() => service.Get(10), Throws.ArgumentException.With.Message.EqualTo("Index provided is greater than maximum provided slots."));
         }
 
+        [TestCase(0)]
+        [TestCase(-5)]
+        public void OnInitialise_GivenNegativeNumber_ThrowsArgumentException(int slots)
+            => Assert.That(() => { var saveService = new SaveService<string>(slots); }, Throws.ArgumentException.With.Message.EqualTo("Slots cannot be zero or negative."));
+
         [Test]
         public void Get_GivenSlotWithNoDataSet_ReturnsNull()
         {
@@ -95,7 +100,54 @@ namespace SaveFileServices.Tests
             var serializer = new XmlSerializer(typeof(string[]));
             var actualData = (string[])serializer.Deserialize(memStream);
 
-            Assert.That(expectedData, Is.EquivalentTo(actualData));
+            Assert.That(actualData, Is.EquivalentTo(expectedData));
         }
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("        ")]
+        public void Load_GivenInvalidFilePath_ThrowsArgumentException(string path)
+        {
+            var service = new SaveService<string>(5);
+            Assert.That(() => service.Load(path), Throws.ArgumentException.With.Message.EqualTo("Path provided is invalid."));
+        }
+
+        [Test]
+        public async Task Load_GivenValidFilePathWithSavedFile_LoadsAndDeserialisesData()
+        {
+            var service = new SaveService<string>(5);
+            var testIndex = 2;
+            var testData = "This is some test data.";
+
+
+            await service.Set(testIndex, testData);
+            await service.Save(_filePath);
+
+            var newService = new SaveService<string>(5);
+            await newService.Load(_filePath);
+
+            var actualData = await newService.Get(testIndex);
+
+            Assert.That(actualData, Is.EqualTo(testData));
+        }
+
+        [Test]
+        public async Task Load_GivenFileWithDiffentSlotAmount_UpdatesSlotNUmber()
+        {
+            var service = new SaveService<string>(10);
+            var testIndex = 2;
+            var testData = "This is some test data.";
+
+
+            await service.Set(testIndex, testData);
+            await service.Save(_filePath);
+
+            var newService = new SaveService<string>(5);
+            await newService.Load(_filePath);
+
+
+            Assert.That(newService.TotalSlots, Is.EqualTo(service.TotalSlots));
+        }
+
     }
 }

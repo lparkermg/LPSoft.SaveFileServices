@@ -17,11 +17,21 @@ namespace SaveFileServices
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveService{TData}"/> class.
         /// </summary>
-        /// <param name="maxSlots">The maximum amount of slots for the service.</param>
+        /// <param name="maxSlots">The maximum amount of slots for the service starting from 1.</param>
         public SaveService(int maxSlots)
         {
+            if (maxSlots <= 0)
+            {
+                throw new ArgumentException("Slots cannot be zero or negative.");
+            }
+
             _maxSlots = new TData[maxSlots];
         }
+
+        /// <summary>
+        /// Gets the total slots for the save data.
+        /// </summary>
+        public int TotalSlots => _maxSlots.Length;
 
         /// <inheritdoc />
         public async Task<TData> Get(int index)
@@ -42,7 +52,18 @@ namespace SaveFileServices
         /// <inheritdoc />
         public Task Load(string path)
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Path provided is invalid.");
+            }
+
+            using (var fs = File.OpenRead(path))
+            {
+                var serializer = new XmlSerializer(typeof(TData[]));
+                _maxSlots = (TData[])serializer.Deserialize(fs);
+
+                return Task.CompletedTask;
+            }
         }
 
         /// <inheritdoc />
