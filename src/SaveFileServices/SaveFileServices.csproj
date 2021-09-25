@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>LPSoft.SaveFileServices</RootNamespace>
+    <AssemblyName>LPSoft.SaveFileServices</AssemblyName>
+    <Authors>Luke Parker</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Provides simple save file services for loading and saving save files.</Description>
+    <Copyright>Copyright by Luke Parker (2021)</Copyright>
+    <PackageProjectUrl>https://github.com/lparkermg/LPSoft.SaveFileServices</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lparkermg/LPSoft.SaveFileServices</RepositoryUrl>
+    <PackageReleaseNotes>Initial release of the SaveFileServices package.</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,7 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <DocumentationFile>.\bin\Release\netstandard2.0\SaveFileServices.xml\SaveFileServices.xml</DocumentationFile>
+    <DocumentationFile>.\bin\Release\netstandard2.0\SaveFileServices.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +31,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
