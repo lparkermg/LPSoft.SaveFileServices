@@ -59,10 +59,16 @@ namespace LPSoft.SaveFileServices
 
             using (var fs = File.OpenRead(path))
             {
-                var serializer = new XmlSerializer(typeof(TData[]));
-                _maxSlots = (TData[])serializer.Deserialize(fs);
+                using (var reader = new BinaryReader(fs))
+                {
+                    var serializer = new XmlSerializer(typeof(TData[]));
+                    using (var stream = new MemoryStream(reader.ReadBytes((int)reader.BaseStream.Length)))
+                    {
+                        _maxSlots = (TData[])serializer.Deserialize(stream);
+                    }
 
-                return Task.CompletedTask;
+                    return Task.CompletedTask;
+                }
             }
         }
 
@@ -76,10 +82,19 @@ namespace LPSoft.SaveFileServices
 
             using (var fs = File.Create(path))
             {
-                var serializer = new XmlSerializer(typeof(TData[]));
-                serializer.Serialize(fs, _maxSlots);
+                using (var writer = new BinaryWriter(fs))
+                {
+                    var serializer = new XmlSerializer(typeof(TData[]));
+                    MemoryStream stream;
+                    using (stream = new MemoryStream())
+                    {
+                        serializer.Serialize(stream, _maxSlots);
+                    }
 
-                return Task.CompletedTask;
+                    writer.Write(stream.ToArray());
+
+                    return Task.CompletedTask;
+                }
             }
         }
 
