@@ -2,7 +2,7 @@
 // Copyright (c) Luke Parker. All rights reserved.
 // </copyright>
 
-namespace SaveFileServices
+namespace LPSoft.SaveFileServices
 {
     using System;
     using System.IO;
