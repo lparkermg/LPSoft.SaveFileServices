@@ -10,8 +10,9 @@
     <Copyright>Copyright by Luke Parker (2021)</Copyright>
     <PackageProjectUrl>https://github.com/lparkermg/LPSoft.SaveFileServices</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lparkermg/LPSoft.SaveFileServices</RepositoryUrl>
-    <PackageReleaseNotes>Initial release of the SaveFileServices package.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updates namespace to add LPSoft.*</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>0.0.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
